@@ -25,6 +25,9 @@ inputs:
   rootPath:
     required: false
     description: 'The root path to your builds. This is the base of which depots will search your files.'
+  customDepot:
+    required: false
+    description: 'custom depot path'
   depot1Path:
     required: false
     description: 'The path to depot1.'
@@ -69,6 +72,7 @@ runs:
     firstDepotIdOverride: ${{ inputs.firstDepotIdOverride }}
     buildDescription: ${{ inputs.buildDescription }}
     rootPath: ${{ inputs.rootPath }}
+    customDepot: ${{ inputs.customDepot }}
     depot1Path: ${{ inputs.depot1Path }}
     depot2Path: ${{ inputs.depot2Path }}
     depot3Path: ${{ inputs.depot3Path }}
