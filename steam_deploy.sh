@@ -2,6 +2,10 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+apt-get update
+apt-get install -y git
+git config --global --add safe.directory '*'
+
 steamdir=${STEAM_HOME:-$HOME/Steam}
 # this is relative to the action
 contentroot=$(pwd)/$rootPath
@@ -24,45 +28,47 @@ else
 fi
 
 i=1;
-export DEPOTS="\n  "
-until [ $i -gt 9 ]; do
-  eval "currentDepotPath=\$depot${i}Path"
-  if [ -n "$currentDepotPath" ]; then
-    # depot1Path uses firstDepotId, depot2Path uses firstDepotId + 1, depot3Path uses firstDepotId + 2...
-    currentDepot=$((firstDepotId + i - 1))
+# export DEPOTS="\n  "
+# until [ $i -gt 9 ]; do
+#   eval "currentDepotPath=\$depot${i}Path"
+#   if [ -n "$currentDepotPath" ]; then
+#     # depot1Path uses firstDepotId, depot2Path uses firstDepotId + 1, depot3Path uses firstDepotId + 2...
+#     currentDepot=$((firstDepotId + i - 1))
 
-    echo ""
-    echo "Adding depot${currentDepot}.vdf ..."
-    echo ""
-    export DEPOTS="$DEPOTS  \"$currentDepot\" \"depot${currentDepot}.vdf\"\n  "
-    cat << EOF > "depot${currentDepot}.vdf"
-"DepotBuildConfig"
-{
-  "DepotID" "$currentDepot"
-  "FileMapping"
-  {
-    "LocalPath" "./$currentDepotPath/*"
-    "DepotPath" "."
-    "recursive" "1"
-  }
-  "FileExclusion" "*.pdb"
-  "FileExclusion" "**/*_BurstDebugInformation_DoNotShip*"
-  "FileExclusion" "**/*_BackUpThisFolder_ButDontShipItWithYourGame*"
-}
-EOF
+#     echo ""
+#     echo "Adding depot${currentDepot}.vdf ..."
+#     echo ""
+#     export DEPOTS="$DEPOTS  \"$currentDepot\" \"depot${currentDepot}.vdf\"\n  "
+#     cat << EOF > "depot${currentDepot}.vdf"
+# "DepotBuildConfig"
+# {
+#   "DepotID" "$currentDepot"
+#   "FileMapping"
+#   {
+#     "LocalPath" "./$currentDepotPath/*"
+#     "DepotPath" "."
+#     "recursive" "1"
+#   }
+#   "FileExclusion" "*.pdb"
+#   "FileExclusion" "**/*_BurstDebugInformation_DoNotShip*"
+#   "FileExclusion" "**/*_BackUpThisFolder_ButDontShipItWithYourGame*"
+# }
+# EOF
 
-  cat depot${currentDepot}.vdf
-  echo ""
-  fi;
+#   cat depot${currentDepot}.vdf
+#   echo ""
+#   fi;
 
-  i=$((i+1))
-done
+#   i=$((i+1))
+# done
 
 echo ""
 echo "#################################"
 echo "#    Generating App Manifest    #"
 echo "#################################"
 echo ""
+
+GIT_SHOW=$(git show --quiet)
 
 cat << EOF > "manifest.vdf"
 "appbuild"
@@ -74,8 +80,9 @@ cat << EOF > "manifest.vdf"
   "setlive" "$releaseBranch"
 
   "depots"
-  {$(echo "$DEPOTS" | sed 's/\\n/\
-/g')}
+  {
+    "$customDepotId" "$customDepot"
+  }
 }
 EOF
 
