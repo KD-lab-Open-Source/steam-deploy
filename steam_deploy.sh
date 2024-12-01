@@ -27,41 +27,6 @@ else
   firstDepotId=$((appId + 1))
 fi
 
-i=1;
-# export DEPOTS="\n  "
-# until [ $i -gt 9 ]; do
-#   eval "currentDepotPath=\$depot${i}Path"
-#   if [ -n "$currentDepotPath" ]; then
-#     # depot1Path uses firstDepotId, depot2Path uses firstDepotId + 1, depot3Path uses firstDepotId + 2...
-#     currentDepot=$((firstDepotId + i - 1))
-
-#     echo ""
-#     echo "Adding depot${currentDepot}.vdf ..."
-#     echo ""
-#     export DEPOTS="$DEPOTS  \"$currentDepot\" \"depot${currentDepot}.vdf\"\n  "
-#     cat << EOF > "depot${currentDepot}.vdf"
-# "DepotBuildConfig"
-# {
-#   "DepotID" "$currentDepot"
-#   "FileMapping"
-#   {
-#     "LocalPath" "./$currentDepotPath/*"
-#     "DepotPath" "."
-#     "recursive" "1"
-#   }
-#   "FileExclusion" "*.pdb"
-#   "FileExclusion" "**/*_BurstDebugInformation_DoNotShip*"
-#   "FileExclusion" "**/*_BackUpThisFolder_ButDontShipItWithYourGame*"
-# }
-# EOF
-
-#   cat depot${currentDepot}.vdf
-#   echo ""
-#   fi;
-
-#   i=$((i+1))
-# done
-
 echo ""
 echo "#################################"
 echo "#    Generating App Manifest    #"
@@ -95,7 +60,7 @@ if [ -n "$steam_totp" ]; then
   echo "#     Using SteamGuard TOTP     #"
   echo "#################################"
   echo ""
-else  
+else
   if [ ! -n "$configVdf" ]; then
     echo "Config VDF input is missing or incomplete! Cannot proceed."
     exit 1
